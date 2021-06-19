@@ -76,7 +76,7 @@ class KmoocListActivity : AppCompatActivity() {
         viewModel.initList()
 
         // 리스트 데이터를 observing 하고 화면에 표시한다
-        viewModel.getLiveLectureList().observe(this, Observer {
+        viewModel.getLiveLectureList().observe(this, {
             Log.d("KBT", it.toString());
             adapter.addLectures(it.lectures)
             binding.progressBar.visibility = View.GONE

@@ -1,20 +1,22 @@
 package com.programmers.kmooc.activities.detail
 
+import android.R
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.programmers.kmooc.KmoocApplication
 import com.programmers.kmooc.databinding.ActivityKmookDetailBinding
 import com.programmers.kmooc.models.Lecture
 import com.programmers.kmooc.network.ImageLoader
+import com.programmers.kmooc.utils.Constants
 import com.programmers.kmooc.utils.DateUtil
-import com.programmers.kmooc.utils.toVisibility
 import com.programmers.kmooc.viewmodels.KmoocDetailViewModel
 import com.programmers.kmooc.viewmodels.KmoocDetailViewModelFactory
 
@@ -38,12 +40,31 @@ class KmoocDetailActivity : AppCompatActivity() {
         binding = ActivityKmookDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loadAndShow()
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        val courseId = intent.getStringExtra(INTENT_PARAM_COURSE_ID)
+        if (courseId == null || "".equals(courseId)) {
+            Toast.makeText(this, "해당 코스를 찾을 수 없습니다!", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+        loadAndShow(courseId)
     }
 
-    private fun loadAndShow() {
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            R.id.home -> {
+//                //toolbar의 back키 눌렀을 때 동작
+//                finish()
+//                return true
+//            }
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
+
+    private fun loadAndShow(courseId: String) {
         // 상세 데이터 요청 & 로딩창 표시
-        val courseId = intent.getStringExtra(INTENT_PARAM_COURSE_ID)
         binding.progressBar.visibility = View.VISIBLE
         viewModel.detail(courseId)
         
@@ -62,16 +83,18 @@ class KmoocDetailActivity : AppCompatActivity() {
                 " ~ " +
                 DateUtil.formatDate(lecture.end)
         binding.lectureDue.setDescription("운영기간", duration)
-        var teachers : String
-        if (lecture.teachers != null) {
-            teachers = lecture.teachers
+        val teachers : String
+        teachers = if (lecture.teachers != null) {
+            lecture.teachers
         } else {
-            teachers = "정보없음"
+            "정보없음"
         }
         binding.lectureTeachers.setDescription("교수정보", teachers)
 
         // 웹뷰
-        binding.webView.loadUrl(lecture.overview)
+        var url = lecture.overview
+        url += "&serviceKey=" + Constants.API_KEY
+        binding.webView.loadUrl(url)
 
         // 이미지 로딩
         ImageLoader.loadImage(

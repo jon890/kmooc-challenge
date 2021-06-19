@@ -1,6 +1,6 @@
 package com.programmers.kmooc.repositories
 
-import android.util.JsonReader
+import android.util.Log
 import com.programmers.kmooc.models.Lecture
 import com.programmers.kmooc.models.LectureList
 import com.programmers.kmooc.network.HttpClient
@@ -26,7 +26,14 @@ class KmoocRepository {
             mapOf("serviceKey" to serviceKey, "Mobile" to 1)
         ) { result ->
             result.onSuccess {
-                completed(parseLectureList(JSONObject(it)))
+                try {
+                    completed(parseLectureList(JSONObject(it)))
+                } catch (e: Exception) {
+                    // todo kbt : 에러 처리 방식을 좀더 추상화 해야할듯
+                    Log.d("KBT", e.toString())
+
+                    completed(LectureList.EMPTY)
+                }
             }
         }
     }
