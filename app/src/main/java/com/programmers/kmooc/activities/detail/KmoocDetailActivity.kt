@@ -92,9 +92,7 @@ class KmoocDetailActivity : AppCompatActivity() {
         binding.lectureTeachers.setDescription("교수정보", teachers)
 
         // 웹뷰
-        var url = lecture.overview
-        url += "&serviceKey=" + Constants.API_KEY
-        binding.webView.loadUrl(url)
+        binding.webView.loadUrl(lecture.overview)
 
         // 이미지 로딩
         ImageLoader.loadImage(

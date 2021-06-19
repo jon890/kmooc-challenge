@@ -60,6 +60,7 @@ class KmoocRepository {
 
     private fun parseLectureList(jsonObject: JSONObject): LectureList {
         //TODO: JSONObject -> LectureList 를 구현하세요
+        // todo kbt : home lecture, detail lecture 분리
         val paginationJsonObject: JSONObject = jsonObject.get("pagination") as JSONObject
         val count: Int = paginationJsonObject.getInt("count")
         val previous: String = paginationJsonObject.getString("previous")
@@ -95,7 +96,7 @@ class KmoocRepository {
         val start: Date = DateUtil.parseDate(jsonObject.getString("start"))
         val end: Date = DateUtil.parseDate(jsonObject.getString("end"))
         val teachers: String? = jsonObject.getString("teachers")
-        val overview: String = jsonObject.getString("blocks_url")
+        val overview: String? = jsonObject.getString("overview")
 
         val mediaObject = jsonObject.getJSONObject("media");
         val thumbnailObject = mediaObject.getJSONObject("course_image")
