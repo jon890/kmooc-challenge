@@ -7,6 +7,7 @@ import com.programmers.kmooc.network.HttpClient
 import com.programmers.kmooc.utils.Constants
 import com.programmers.kmooc.utils.DateUtil
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
@@ -31,7 +32,6 @@ class KmoocRepository {
                 } catch (e: Exception) {
                     // todo kbt : 에러 처리 방식을 좀더 추상화 해야할듯
                     Log.d("KBT", e.toString())
-
                     completed(LectureList.EMPTY)
                 }
             }
@@ -86,6 +86,7 @@ class KmoocRepository {
 
     private fun parseLecture(jsonObject: JSONObject): Lecture {
         //TODO: JSONObject -> Lecture 를 구현하세요
+        // todo kbt : home lecture, detail lecture 분리
         val id: String = jsonObject.getString("id")
         val number: String = jsonObject.getString("number")
         val name: String = jsonObject.getString("name")
@@ -96,7 +97,13 @@ class KmoocRepository {
         val start: Date = DateUtil.parseDate(jsonObject.getString("start"))
         val end: Date = DateUtil.parseDate(jsonObject.getString("end"))
         val teachers: String? = jsonObject.getString("teachers")
-        val overview: String? = jsonObject.getString("overview")
+
+        var overview: String?
+        try {
+            overview = jsonObject.getString("overview")
+        } catch (e: JSONException) {
+            overview = "";
+        }
 
         val mediaObject = jsonObject.getJSONObject("media");
         val thumbnailObject = mediaObject.getJSONObject("course_image")

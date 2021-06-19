@@ -17,9 +17,9 @@ class KmoocListViewModel(private val repository: KmoocRepository) : ViewModel() 
     fun initList() {
         repository.list { lectureList ->
             // 오류시 재 요청
-            if (LectureList.EMPTY == lectureList) {
-                initList()
-            }
+//            if (LectureList.EMPTY == lectureList) {
+//                initList()
+//            }
 
             liveLectureList.postValue(lectureList)
         }
